@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Formulário</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    display: flex; justify-content: center; align-items: flex-start; min-height: 100vh;
+  }
+  #form-container {
+    background-color: #fff;
+    color: #202124;
+    max-width: 480px;
+    width: 95%;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.2);
+    border-radius: 8px;
+    margin: 1rem;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #202124;
+  }
+  label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #202124;
+  }
+  input[type="text"],
+  input[type="number"],
+  input[type="email"],
+  input[type="tel"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    font-size: 1rem;
+    margin-top: 0.3rem;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+  }
+  textarea {
+    resize: vertical;
+  }
+  button {
+    font-family: Arial, sans-serif;
+    background-color: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0.5rem 0.3rem 0.5rem 0.3rem;
+    min-width: 110px;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #155ab6;
+  }
+  #btn-coords {
+    display: block;
+    margin: 0.7rem auto 0 auto;
+    min-width: 140px;
+  }
+  #botoes-final {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  th, td {
+    border: 1px solid #dadce0;
+    padding: 0.6rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th {
+    background-color: #f1f3f4;
+    font-weight: 700;
+    width: 40%;
+  }
+  /* Responsivo */
+  @media (max-width: 480px) {
+    #form-container {
+      padding: 1rem;
+      width: 100%;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    button {
+      min-width: 100%;
+      margin: 0.3rem 0;
+    }
+    #botoes-final {
+      flex-direction: column;
+      align-items: center;
+    }
+    #btn-coords {
+      min-width: 100%;
+      margin-bottom: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="form-container">
+  <h1>Formulário</h1>
+
+  <label for="latitude">Latitude</label>
+  <input type="text" id="latitude" readonly />
+
+  <label for="longitude">Longitude</label>
+  <input type="text" id="longitude" readonly />
+
+  <button id="btn-coords">Obter Coordenadas</button>
+
+  <label for="data_ocorrencia">Data da Ocorrência</label>
+  <input type="text" id="data_ocorrencia" readonly />
+
+  <label for="hora_ocorrencia">Hora da Ocorrência</label>
+  <input type="text" id="hora_ocorrencia" readonly />
+
+  <label for="posto_graduacao">Posto/Graduação</label>
+  <input type="text" id="posto_graduacao" />
+
+  <label for="re_militar">RE do Militar</label>
+  <input type="number" id="re_militar" />
+
+  <label for="nome_guerra">Nome de Guerra</label>
+  <input type="text" id="nome_guerra" />
+
+  <label for="obm_origem">OBM de Origem</label>
+  <input type="text" id="obm_origem" />
+
+  <label for="email">E-mail</label>
+  <input type="email" id="email" />
+
+  <label for="celular">Celular</label>
+  <input type="tel" id="celular" maxlength="16" placeholder="(69) 9 xxxx-xxxx" />
+
+  <label for="unidade_operacional">Unidade Operacional</label>
+  <input type="text" id="unidade_operacional" />
+
+  <label for="municipio">Município</label>
+  <input type="text" id="municipio" />
+
+  <label for="tipo_escala">Tipo da Escala</label>
+  <input type="text" id="tipo_escala" />
+
+  <label for="zona_atuacao">Zona de Atuação</label>
+  <input type="text" id="zona_atuacao" />
+
+  <label for="area_atuacao">Área de Atuação</label>
+  <input type="text" id="area_atuacao" />
+
+  <label for="tipo_ocorrencia">Tipo de Ocorrência</label>
+  <input type="text" id="tipo_ocorrencia" />
+
+  <label for="atuacao_gcif">Atuação GCIF</label>
+  <input type="text" id="atuacao_gcif" />
+
+  <label for="animais_mortos">Animais Mortos</label>
+  <input type="number" id="animais_mortos" />
+
+  <label for="animais_resgatados">Animais Resgatados</label>
+  <input type="number" id="animais_resgatados" />
+
+  <label for="multas_aplicadas">Multas Aplicadas</label>
+  <input type="number" id="multas_aplicadas" />
+
+  <label for="valor_multas">Valor Total das Multas (R$)</label>
+  <input type="number" id="valor_multas" step="0.01" inputmode="decimal" />
+
+  <label for="publico_alvo">Público Alvo</label>
+  <input type="number" id="publico_alvo" />
+
+  <label for="protocolo_siseg">Protocolo SISEG</label>
+  <input type="number" id="protocolo_siseg" />
+
+  <label for="qnt_siseg">QNT SISEG</label>
+  <input type="number" id="qnt_siseg" />
+
+  <label for="equipes">Equipes</label>
+  <input type="text" id="equipes" />
+
+  <label for="observacoes">Observações</label>
+  <textarea id="observacoes" rows="3"></textarea>
+
+  <div id="botoes-final">
+    <button id="btn-visualizar">Visualizar</button>
+    <button id="btn-adicionar">Adicionar</button>
+    <button id="btn-exportar">Exportar Excel</button>
+    <button id="btn-limpar">Limpar</button>
+  </div>
+
+  <div id="tabela_dados"></div>
+</div>
+
+<script>
+  // Variáveis globais
+  let dadosVisualizados = null;
+  let dadosForm = [];
+
+  const camposOrdem = [
+    "latitude", "longitude", "data_ocorrencia", "hora_ocorrencia",
+    "posto_graduacao", "re_militar", "nome_guerra", "obm_origem",
+    "email", "celular", "unidade_operacional", "municipio",
+    "tipo_escala", "zona_atuacao", "area_atuacao", "tipo_ocorrencia",
+    "atuacao_gcif", "animais_mortos", "animais_resgatados",
+    "multas_aplicadas", "valor_multas", "publico_alvo",
+    "protocolo_siseg", "qnt_siseg", "equipes", "observacoes"
+  ];
+
+  function formatarLabel(campo) {
+    const mapa = {
+      latitude: "Latitude",
+      longitude: "Longitude",
+      data_ocorrencia: "Data da Ocorrência",
+      hora_ocorrencia: "Hora da Ocorrência",
+      posto_graduacao: "Posto/Graduação",
+      re_militar: "RE do Militar",
+      nome_guerra: "Nome de Guerra",
+      obm_origem: "OBM de Origem",
+      email: "E-mail",
+      celular: "Celular",
+      unidade_operacional: "Unidade Operacional",
+      municipio: "Município",
+      tipo_escala: "Tipo da Escala",
+      zona_atuacao: "Zona de Atuação",
+      area_atuacao: "Área de Atuação",
+      tipo_ocorrencia: "Tipo de Ocorrência",
+      atuacao_gcif: "Atuação GCIF",
+      animais_mortos: "Animais Mortos",
+      animais_resgatados: "Animais Resgatados",
+      multas_aplicadas: "Multas Aplicadas",
+      valor_multas: "Valor Total das Multas (R$)",
+      publico_alvo: "Público Alvo",
+      protocolo_siseg: "Protocolo SISEG",
+      qnt_siseg: "QNT SISEG",
+      equipes: "Equipes",
+      observacoes: "Observações"
+    };
+    return mapa[campo] || campo;
+  }
+
+  // Máscara para celular no formato (69) 9 xxxx-xxxx
+  const inputCelular = document.getElementById("celular");
+  inputCelular.addEventListener("input", function(e) {
+    let v = this.value.replace(/\D/g, ""); // remove tudo que não é dígito
+    if (v.length > 11) v = v.slice(0, 11); // máximo 11 dígitos (DDD+9+8 números)
+    
+    // Construção da máscara
+    let resultado = "";
+    if (v.length > 0) {
+      resultado += "(" + v.substring(0, 2);
+    }
+    if (v.length >= 3) {
+      resultado += ") " + v.substring(2, 3) + " ";
+    }
+    if (v.length >= 7) {
+      resultado += v.substring(3, 7) + "-";
+      resultado += v.substring(7, 11);
+    } else if (v.length > 3) {
+      resultado += v.substring(3);
+    }
+    this.value = resultado;
+  });
+
+  // Obter coordenadas e data/hora automática
+  document.getElementById("btn-coords").addEventListener("click", () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude.toFixed(7);
+          const lon = pos.coords.longitude.toFixed(7);
+          document.getElementById("latitude").value = lat;
+          document.getElementById("longitude").value = lon;
+
+          const now = new Date(pos.timestamp);
+          const data = now.toLocaleDateString('pt-BR');
+          const hora = now.toLocaleTimeString('pt-BR');
+
+          document.getElementById("data_ocorrencia").value = data;
+          document.getElementById("hora_ocorrencia").value = hora;
+
+          alert("Coordenadas, data e hora obtidas com sucesso!");
+        },
+        (error) => {
+          alert("Erro ao obter localização: " + error.message);
+        }
+      );
+    } else {
+      alert("Geolocalização não é suportada por este navegador.");
+    }
+  });
+
+  function limparFormulario() {
+    camposOrdem.forEach(campo => {
+      const el = document.getElementById(campo);
+      if(el) el.value = "";
+    });
+    dadosVisualizados = null;
+    document.getElementById("tabela_dados").innerHTML = "";
+  }
+
+  function mostrarDadosNaTela(dados) {
+    const container = document.getElementById("tabela_dados");
+    if (!dados) {
+      container.innerHTML = "<p>Nenhum dado para visualizar.</p>";
+      return;
+    }
+
+    let html = "<h2>Dados Visualizados</h2><table>";
+    camposOrdem.forEach(campo => {
+      const valor = dados[campo] ? dados[campo].toString().replace(/</g, "&lt;").replace(/>/g, "&gt;") : "";
+      html += `<tr><th>${formatarLabel(campo)}</th><td>${valor}</td></tr>`;
+    });
+    html += "</table>";
+
+    container.innerHTML = html;
+  }
+
+  document.getElementById("btn-visualizar").addEventListener("click", () => {
+    const dados = {};
+    camposOrdem.forEach(campo => {
+      const el = document.getElementById(campo);
+      dados[campo] = el ? el.value.trim() : "";
+    });
+    dadosVisualizados = dados;
+    mostrarDadosNaTela(dadosVisualizados);
+  });
+
+  document.getElementById("btn-adicionar").addEventListener("click", () => {
+    if (!dadosVisualizados) {
+      alert("Antes de adicionar, visualize os dados clicando em 'Visualizar'.");
+      return;
+    }
+    dadosForm.push(dadosVisualizados);
+    alert("Dados adicionados ao formulário com sucesso!");
+    limparFormulario();
+  });
+
+  document.getElementById("btn-limpar").addEventListener("click", () => {
+    if(confirm("Deseja realmente limpar o formulário e os dados visualizados?")) {
+      limparFormulario();
+      dadosForm = [];
+    }
+  });
+
+  document.getElementById("btn-exportar").addEventListener("click", () => {
+    if(dadosForm.length === 0) {
+      alert("Não há dados para exportar.");
+      return;
+    }
+    // Construir array para XLSX: array de objetos com chave=label e valor=campo
+    const exportArray = dadosForm.map(item => {
+      const obj = {};
+      camposOrdem.forEach(campo => {
+        obj[formatarLabel(campo)] = item[campo] || "";
+      });
+      return obj;
+    });
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(exportArray);
+    XLSX.utils.book_append_sheet(wb, ws, "Formulários");
+
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([wbout], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "dados_formularios.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 0);
+  });
+</script>
+
+</body>
+</html>
