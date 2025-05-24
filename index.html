@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Ocorrência</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    input, button, select { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+    #dadosAdicionadosWrapper { overflow-x: auto; margin-top: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; table-layout: auto; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; white-space: nowrap; }
+    #visualizacao table { width: 100%; table-layout: auto; }
+    #visualizacao th { text-align: left; white-space: nowrap; }
+    #visualizacao td { text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>Registro de Ocorrência</h1>
+
+  <button onclick="obterCoordenadas()">Obter Coordenadas, Data e Hora</button><br>
+  <label>Latitude:</label><input type="text" id="latitude" readonly>
+  <label>Longitude:</label><input type="text" id="longitude" readonly>
+  <label>Data:</label><input type="text" id="data" readonly>
+  <label>Hora:</label><input type="text" id="hora" readonly>
+
+  <label>Nome:</label><input type="text" id="nome">
+  <label>Data de Nascimento:</label><input type="date" id="dataNascimento">
+  <label>Profissão:</label>
+  <select id="profissao" onchange="atualizarAtuacaoSituacao()">
+    <option value="">Selecione</option>
+    <option value="A">A</option>
+    <option value="B">B</option>
+    <option value="C">C</option>
+  </select>
+  <label>Atuação:</label><input type="text" id="atuacao" readonly>
+  <label>Situação:</label><input type="text" id="situacao" readonly>
+  <label>Endereço:</label><input type="text" id="endereco">
+
+  <label>RE do Militar:</label><input type="text" id="reMilitar" onchange="preencherDadosMilitar()">
+  <label>Nome do Militar:</label><input type="text" id="nomeMilitar" readonly>
+  <label>Posto/Graduação:</label><input type="text" id="postoGraduacao" readonly>
+  <label>OPM:</label><input type="text" id="opm" readonly>
+
+  <button onclick="visualizarDados()">Visualizar</button>
+  <button onclick="adicionarDados()">Adicionar</button>
+  <button onclick="exportarParaExcel()">Exportar Excel</button>
+  <button onclick="confirmarLimparFormulario()">Limpar Formulário</button>
+  <button onclick="confirmarLimparDados()">Limpar Dados Adicionados</button>
+
+  <div id="visualizacao"></div>
+  <div id="dadosAdicionadosWrapper"><div id="dadosAdicionados"></div></div>
+
+  <script>
+    let dados = [];
+
+    const profissaoMap = {
+      A: { atuacao: "MECANICO", situacao: "IDOSO" },
+      B: { atuacao: "MOTORISTA", situacao: "JOVEM" },
+      C: { atuacao: "ENGENHEIRO", situacao: "MULHER" },
+    };
+
+    const militares = {
+      '123456': { nome: 'Carlos Silva', posto: 'Sargento', opm: '10º BPM' },
+      '234567': { nome: 'Ana Souza', posto: 'Tenente', opm: '3º BPRv' },
+      '345678': { nome: 'João Lima', posto: 'Capitão', opm: '5ª CIPM' }
+    };
+
+    function preencherDadosMilitar() {
+      const re = document.getElementById('reMilitar').value.trim();
+      const militar = militares[re];
+      document.getElementById('nomeMilitar').value = militar ? militar.nome : '';
+      document.getElementById('postoGraduacao').value = militar ? militar.posto : '';
+      document.getElementById('opm').value = militar ? militar.opm : '';
+    }
+
+    function atualizarAtuacaoSituacao() {
+      const prof = document.getElementById('profissao').value;
+      const info = profissaoMap[prof] || { atuacao: '', situacao: '' };
+      document.getElementById('atuacao').value = info.atuacao;
+      document.getElementById('situacao').value = info.situacao;
+    }
+
+    function obterCoordenadas() {
+      const date = new Date();
+      document.getElementById('data').value = date.toLocaleDateString();
+      document.getElementById('hora').value = date.toLocaleTimeString();
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            document.getElementById('latitude').value = pos.coords.latitude;
+            document.getElementById('longitude').value = pos.coords.longitude;
+          },
+          err => {
+            console.warn('Geolocalização não disponível:', err);
+            document.getElementById('latitude').value = 'Não disponível';
+            document.getElementById('longitude').value = 'Não disponível';
+          },
+          { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
+      }
+    }
+
+    function visualizarDados() {
+      const dadosVisuais = coletarDados();
+      let html = '<table>';
+      for (let campo in dadosVisuais) {
+        html += '<tr><th>' + campo + '</th><td>' + dadosVisuais[campo] + '</td></tr>';
+      }
+      html += '</table>';
+      document.getElementById('visualizacao').innerHTML = html;
+    }
+
+    function adicionarDados() {
+      if (!confirm('Deseja adicionar os dados?')) return;
+      const dadosItem = coletarDados();
+      dados.unshift(dadosItem);
+      atualizarTabela();
+      limparFormulario();
+    }
+
+    function atualizarTabela() {
+      if (dados.length === 0) {
+        document.getElementById('dadosAdicionados').innerHTML = '';
+        return;
+      }
+      let html = '<table><tr>';
+      for (let campo in dados[0]) html += '<th>' + campo + '</th>';
+      html += '</tr>';
+      for (let d of dados) {
+        html += '<tr>';
+        for (let campo in d) html += '<td>' + d[campo] + '</td>';
+        html += '</tr>';
+      }
+      html += '</table>';
+      document.getElementById('dadosAdicionados').innerHTML = html;
+    }
+
+    function exportarParaExcel() {
+      if (!confirm('Deseja exportar os dados para Excel?')) return;
+      let csv = '';
+      if (dados.length === 0) return alert('Nenhum dado para exportar.');
+      csv += Object.keys(dados[0]).join(',') + '\n';
+      for (let d of dados) {
+        csv += Object.values(d).map(v => '"' + v.replace(/"/g, '""') + '"').join(',') + '\n';
+      }
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'dados.csv');
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function confirmarLimparFormulario() {
+      if (confirm('Deseja limpar o formulário?')) limparFormulario();
+    }
+
+    function limparFormulario() {
+      const ids = ['latitude', 'longitude', 'data', 'hora', 'nome', 'dataNascimento', 'profissao', 'atuacao', 'situacao', 'endereco', 'reMilitar', 'nomeMilitar', 'postoGraduacao', 'opm'];
+      ids.forEach(id => document.getElementById(id).value = '');
+      document.getElementById('visualizacao').innerHTML = '';
+    }
+
+    function confirmarLimparDados() {
+      if (confirm('Deseja limpar todos os dados adicionados?')) {
+        dados = [];
+        document.getElementById('dadosAdicionados').innerHTML = '';
+      }
+    }
+
+    function coletarDados() {
+      return {
+        Latitude: document.getElementById('latitude').value,
+        Longitude: document.getElementById('longitude').value,
+        Data: document.getElementById('data').value,
+        Hora: document.getElementById('hora').value,
+        Nome: document.getElementById('nome').value,
+        "Data de Nascimento": document.getElementById('dataNascimento').value,
+        Profissão: document.getElementById('profissao').value,
+        Atuação: document.getElementById('atuacao').value,
+        Situação: document.getElementById('situacao').value,
+        Endereço: document.getElementById('endereco').value,
+        "RE do Militar": document.getElementById('reMilitar').value,
+        "Nome do Militar": document.getElementById('nomeMilitar').value,
+        "Posto/Graduação": document.getElementById('postoGraduacao').value,
+        OPM: document.getElementById('opm').value
+      };
+    }
+  </script>
+</body>
+</html>
