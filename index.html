@@ -293,8 +293,7 @@ form, .form-container {
         <button type="button" onclick="capturarFoto()">Capturar Foto</button>
         <button type="button" onclick="fecharCamera()">Fechar Câmera</button>
       </div>
-      </div>
-
+      
       <div id="fotosPreview"></div>
     </div>
    
@@ -489,6 +488,7 @@ form, .form-container {
     container.appendChild(img);
     container.appendChild(downloadLink);
     fotosPreview.appendChild(container);
+    </div>
   });
 }
 
@@ -500,7 +500,7 @@ form, .form-container {
       console.log("Câmera desligada.");
     }
   }
-
+ 
 function obterCoordenadas() {
   navigator.geolocation.getCurrentPosition(pos => {
     document.getElementById('latitude').value = pos.coords.latitude.toFixed(6);
